@@ -21,13 +21,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-
       - name: Set S3 Bucket Name Based on Branch
         id: set_bucket_name
         run: echo "S3_BUCKET_NAME=terraform-remote-state-${{ github.ref_name }}" >> $GITHUB_ENV
