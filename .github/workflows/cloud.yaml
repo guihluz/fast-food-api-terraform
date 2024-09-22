@@ -1,0 +1,55 @@
+name: Terraform AWS Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: 'Terraform Plan and Apply'
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: 'us-east-1'
+      TF_VAR_region: 'us-east-1'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set S3 Bucket Name Based on Branch
+        id: set_bucket_name
+        run: echo "S3_BUCKET_NAME=terraform-remote-state-${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Check if S3 Bucket Exists
+        id: s3_check
+        run: |
+          if aws s3 ls "s3://${{ env.S3_BUCKET_NAME }}" 2>&1 | grep -q 'NoSuchBucket'; then
+            aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }} --region ${{ env.AWS_DEFAULT_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_DEFAULT_REGION }}
+          fi
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.6
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ env.S3_BUCKET_NAME }}" -backend-config="region=${{ env.AWS_DEFAULT_REGION }}"
+
+      - name: Terraform Plan
+        run: terraform plan -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -out=plan.tfplan
+
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve plan.tfplan
