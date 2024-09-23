@@ -140,7 +140,7 @@ resource "aws_db_subnet_group" "rds_subnet" {
 resource "aws_db_instance" "postgres" {
   allocated_storage    = 20
   engine               = "postgres"
-  engine_version       = "16.3-R2"
+  engine_version       = "16.3"
   instance_class       = "db.t3.micro"
   username             = "postgres"
   password             = "postgres"
