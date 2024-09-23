@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: 'us-east-1'
+          role-to-assume: arn:aws:iam::566814225519:role/LabRole
+          role-duration-seconds: 900
+          role-session-name: SecretsManagerFetch        
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
