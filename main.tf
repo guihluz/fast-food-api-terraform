@@ -142,7 +142,6 @@ resource "aws_db_instance" "postgres" {
   engine               = "postgres"
   engine_version       = "16.3-R2"
   instance_class       = "db.t3.micro"
-  name                 = "fastfood"
   username             = "postgres"
   password             = "postgres"
   parameter_group_name = "default.postgres16"
