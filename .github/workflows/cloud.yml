@@ -24,6 +24,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: 'us-east-1'
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}          
           role-to-assume: arn:aws:iam::566814225519:role/LabRole
           role-duration-seconds: 900
           role-session-name: SecretsManagerFetch        
