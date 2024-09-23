@@ -8,7 +8,7 @@ on:
 
 jobs:
   terraform:
-    name: 'Terraform Plan and Apply'
+    name: 'Terraform Plan and App'
     runs-on: ubuntu-latest
 
     env:
