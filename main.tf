@@ -98,7 +98,9 @@ data "aws_iam_role" "lab_role" {
 resource "aws_db_instance" "postgres" {
   allocated_storage    = 20
   engine               = "postgres"
-  engine_version       = "16.3"
+  engine_version       = "16.4"
+  apply_immediately    = true
+  identifier           = "postgres-db-fast-food"
   instance_class       = "db.t3.micro"
   username             = "postgres"
   password             = "postgres"
