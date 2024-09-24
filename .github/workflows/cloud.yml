@@ -34,8 +34,8 @@ jobs:
       - name: Check if S3 Bucket Exists
         id: s3_check
         run: |
-          if aws s3 ls "s3://${{ env.S3_BUCKET_NAME }}" 2>&1 | grep -q 'NoSuchBucket'; then
-            aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }} --region ${{ env.AWS_DEFAULT_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_DEFAULT_REGION }}
+          if ! aws s3 ls ${{ env.S3_BUCKET_NAME }} --region ${{ env.AWS_DEFAULT_REGION }}; then
+            aws s3 mb s3://${{ env.S3_BUCKET_NAME }} --region ${{ env.AWS_DEFAULT_REGION }}
           fi
 
       - name: Setup Terraform
