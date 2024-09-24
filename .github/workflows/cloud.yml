@@ -27,17 +27,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
-      - name: Set S3 Bucket
-        id: set_bucket_name
-        run: echo "S3_BUCKET_NAME=remote-state-${{ github.ref_name }}" >> $GITHUB_ENV
-
-      - name: Check if S3 Bucket Exists
-        id: s3_check
-        run: |
-          if ! aws s3api head-bucket --bucket remote-state-main --region us-east-1 2>/dev/null; then
-            aws s3api create-bucket --bucket ${{ env.S3_BUCKET_NAME }} --region ${{ env.AWS_DEFAULT_REGION }}
-          fi
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
