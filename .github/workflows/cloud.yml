@@ -33,7 +33,7 @@ jobs:
           terraform_version: 1.9.6
 
       - name: Terraform Init
-        run: terraform init -force-copy -input=false -backend-config bucket=${{ env.S3_BUCKET_NAME }}
+        run: terraform init
 
       - name: Terraform Plan
         run: terraform plan -var="aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -out=plan.tfplan
